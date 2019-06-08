@@ -15,6 +15,8 @@ except:
 
 maxRow = size-1
 maxCol = size-1
+liveToken = '0'
+deadToken = ' '
 
 gameState = []
 
@@ -23,9 +25,9 @@ for i in range(size):
     for j in range(size):
         randInt = random.randint(0,1)
         if(randInt == 0):
-            gameState[i].append('-')
+            gameState[i].append(deadToken)
         else:
-            gameState[i].append('X')
+            gameState[i].append(liveToken)
 
 def printGameboard(gameState):
     for index in gameState:
@@ -81,16 +83,16 @@ def liveOrDie(neighbors, entry):
 
     liveNeighborCount = 0
     for neighbor in neighbors:
-        if gameState[neighbor[0]][neighbor[1]] == 'X':
+        if gameState[neighbor[0]][neighbor[1]] == liveToken:
             liveNeighborCount += 1
 
-    if(liveNeighborCount < 2 and entry == 'X'):
+    if(liveNeighborCount < 2 and entry == liveToken):
         return False
-    elif(liveNeighborCount >3 and entry =='X'):
+    elif(liveNeighborCount >3 and entry ==liveToken):
         return False
-    elif(entry == '-' and liveNeighborCount == 3):
+    elif(entry == deadToken and liveNeighborCount == 3):
         return True
-    elif(entry == "X" and (liveNeighborCount == 2 or liveNeighborCount ==3)):
+    elif(entry == liveToken and (liveNeighborCount == 2 or liveNeighborCount ==3)):
         return True
     else: 
         return False
@@ -112,9 +114,9 @@ def main():
                 result = liveOrDie(ourNeighbors, gameState[i][j])
                 
                 if(result == True):
-                    tempGameState[i].append('X')
+                    tempGameState[i].append(liveToken)
                 else:
-                    tempGameState[i].append('-')
+                    tempGameState[i].append(deadToken)
         
         printGameboard(tempGameState)
         gameState = tempGameState
