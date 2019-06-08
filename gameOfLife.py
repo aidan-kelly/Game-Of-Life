@@ -1,16 +1,26 @@
 import sys
 import os
 import random
+import time
 
-size = 5
+if(len(sys.argv) != 2):
+    print("Please enter the size of board you want to use as a command line argument.")
+    sys.exit()
+
+try:
+    size = int(sys.argv[1])
+except:
+    print("Please enter an integer for the size of your board.")
+    sys.exit()
+
 maxRow = size-1
 maxCol = size-1
 
 gameState = []
 
-for i in range(size-1):
+for i in range(size):
     gameState.append([])
-    for j in range(size-1):
+    for j in range(size):
         randInt = random.randint(0,1)
         if(randInt == 0):
             gameState[i].append('-')
@@ -23,45 +33,46 @@ def printGameboard(gameState):
             sys.stdout.write(str(item))
         print("")
 
+    for i in range(5):
+        print("")
 
-def getNeighbors(oRow, oCol):
-    print(oRow)
-    print(oCol)
 
-    if oRow == 0 and oCol == 0:
+def getNeighbors(row, col):
+
+    if row == 0 and col == 0:
         return [[0,1], [1,0], [1,1]]
 
-    elif oRow ==0 and oCol == maxCol:
+    elif row ==0 and col == maxCol:
         return [[0, maxCol-1], [1, maxCol-1], [1, maxCol]]
 
-    elif oRow == 0:
-        return [[0, oCol-1], [0, oCol+1], [1, oCol-1], [1, oCol], [1, oCol+1]]
+    elif row == 0:
+        return [[0, col-1], [0, col+1], [1, col-1], [1, col], [1, col+1]]
 
-    elif oRow == maxRow and oCol == 0:
+    elif row == maxRow and col == 0:
         return [[maxRow-1, 0], [maxRow-1, 1], [maxRow, 1]]
 
-    elif oRow == maxRow and oCol == maxCol:
-        return [[maxRow, oCol-1], [maxRow-1, oCol-1], [maxRow-1, oCol]]
+    elif row == maxRow and col == maxCol:
+        return [[maxRow, col-1], [maxRow-1, col-1], [maxRow-1, col]]
 
-    elif oRow == maxRow:
-        return [[maxRow, oCol-1], [maxRow, oCol+1], [maxRow-1, oCol-1], [maxRow-1, oCol], [maxRow-1, oCol+1]]
+    elif row == maxRow:
+        return [[maxRow, col-1], [maxRow, col+1], [maxRow-1, col-1], [maxRow-1, col], [maxRow-1, col+1]]
 
-    elif oCol == 0:
-        return [[oRow-1, oCol], [oRow-1, oCol+1],
-                [oRow, oCol+1], 
-                [oRow+1, oCol], [oRow+1, oCol+1]]
+    elif col == 0:
+        return [[row-1, col], [row-1, col+1],
+                [row, col+1], 
+                [row+1, col], [row+1, col+1]]
 
-    elif oCol == maxCol:
-        return [[oRow-1, oCol], [oRow-1, oCol-1],
-                [oRow, oCol-1],
-                [oRow+1, oCol], [oRow+1, oCol-1]]
+    elif col == maxCol:
+        return [[row-1, col], [row-1, col-1],
+                [row, col-1],
+                [row+1, col], [row+1, col-1]]
 
 
     else:
 
-        return [[oRow-1, oCol-1], [oRow-1 , oCol], [oRow-1 , oCol+1],
-                [oRow, oCol-1], [oRow, oCol+1],
-                [oRow+1, oCol-1], [oRow+1, oCol], [oRow+1, oCol+1]]
+        return [[row-1, col-1], [row-1 , col], [row-1 , col+1],
+                [row, col-1], [row, col+1],
+                [row+1, col-1], [row+1, col], [row+1, col+1]]
 
 
 
@@ -70,8 +81,6 @@ def liveOrDie(neighbors, entry):
 
     liveNeighborCount = 0
     for neighbor in neighbors:
-        print(neighbor[0])
-        print(neighbor[1])
         if gameState[neighbor[0]][neighbor[1]] == 'X':
             liveNeighborCount += 1
 
@@ -81,36 +90,38 @@ def liveOrDie(neighbors, entry):
         return False
     elif(entry == '-' and liveNeighborCount == 3):
         return True
-    else: 
+    elif(entry == "X" and (liveNeighborCount == 2 or liveNeighborCount ==3)):
         return True
+    else: 
+        return False
     
-    
-    print(liveNeighborCount)
 
 def main():
 
+    counter=0
     while(True):
 
         global gameState
-        tempGameState = gameState
+        tempGameState = []
 
-        for rindex, row in enumerate(gameState):
-
+        for i in range(0,size):
             tempGameState.append([])
-            for cindex, column in enumerate(gameState):
-                ourNeighbors = getNeighbors(rindex, cindex)
-                print(ourNeighbors)
-                result = liveOrDie(ourNeighbors, gameState[rindex][cindex])
+            for j in range(0,size):
+
+                ourNeighbors = getNeighbors(i, j)
+                result = liveOrDie(ourNeighbors, gameState[i][j])
                 
                 if(result == True):
-                    tempGameState[rindex].append('X')
+                    tempGameState[i].append('X')
                 else:
-                    tempGameState[rindex].append('-')
+                    tempGameState[i].append('-')
         
         printGameboard(tempGameState)
         gameState = tempGameState
+        counter+=1
 
-    printGameboard(gameState)
+        time.sleep(0.5)
+
 
 
 main()
