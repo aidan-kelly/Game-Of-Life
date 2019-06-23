@@ -42,14 +42,13 @@ for i in range(size):
 
 #function to print the gamestate.
 def printGameboard(gameState):
+    
+    os.system('cls' if os.name=='nt' else 'clear')
 
     #loop through the gamestate and print the token.
     for index in gameState:
         for item in index:
             sys.stdout.write(str(item))
-        print("")
-
-    for i in range(10):
         print("")
 
 
